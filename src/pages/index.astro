@@ -29,7 +29,7 @@ const latestPost = posts[0];
   <!-- Featured Post -->
   {latestPost && (
     <section class="reveal mb-20">
-      <a href={`/blog/${latestPost.id}`} class="glass block p-8 md:p-10 group">
+      <a href={`/blog/${latestPost.id.replace(/\.md$/, '')}`} class="glass block p-8 md:p-10 group">
         <div class="mono text-[var(--ocean-500)] mb-3 text-xs uppercase tracking-widest">Latest Post</div>
         <h2 class="text-2xl md:text-3xl text-[var(--ocean-100)] group-hover:text-white transition-colors mb-3 font-light">
           {latestPost.data.title}
@@ -90,7 +90,7 @@ const latestPost = posts[0];
       <h2 class="mono text-[var(--ocean-500)] text-xs uppercase tracking-widest mb-6">All Posts</h2>
       <div class="space-y-4 reveal-stagger">
         {posts.slice(1).map((post) => (
-          <a href={`/blog/${post.id}`} class="glass block p-6 group">
+          <a href={`/blog/${post.id.replace(/\.md$/, '')}`} class="glass block p-6 group">
             <div class="flex items-baseline justify-between gap-4 flex-wrap">
               <h3 class="text-lg text-[var(--ocean-200)] group-hover:text-white transition-colors font-light">
                 {post.data.title}
