@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: post,
+  }));
+}
+
+const post = Astro.props;
+const { Content } = await render(post);
+
+const readingTime = Math.ceil(post.body.split(/\s+/).length / 200);
+---
+
+<Base title={post.data.title} description={post.data.description}>
+  <article class="py-12">
+    <header class="mb-12">
+      <a href="/" class="text-ocean-500 hover:text-ocean-400 text-sm transition-colors mb-6 inline-block">← back to posts</a>
+      <h1 class="text-3xl md:text-4xl font-light text-ocean-100 mb-4 leading-tight">{post.data.title}</h1>
+      <div class="flex gap-4 text-sm text-gray-500">
+        <time>{post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+        <span>·</span>
+        <span>{readingTime} min read</span>
+      </div>
+    </header>
+
+    <div class="prose text-gray-300 text-lg leading-relaxed">
+      <Content />
+    </div>
+  </article>
+</Base>
