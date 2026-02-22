@@ -1,4 +1,6 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
+
 interface Props {
   title?: string;
   description?: string;
@@ -9,41 +11,259 @@ const fullTitle = title === 'kai-writes' ? title : `${title} — kai-writes`;
 ---
 
 <!DOCTYPE html>
-<html lang="en" class="bg-ocean-950 text-gray-200">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>" />
   <title>{fullTitle}</title>
   <link rel="alternate" type="application/rss+xml" title="kai-writes" href="/rss.xml" />
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-    .prose { font-family: 'Lora', Georgia, serif; }
-    .prose p { line-height: 1.85; margin-bottom: 1.5em; }
-    .prose blockquote { border-left: 3px solid #22a7b0; padding-left: 1.5em; font-style: italic; color: #7eeaea; }
-    .prose em { color: #4dd9d9; }
-    .prose strong { color: #c0f5f5; }
-    .prose hr { border-color: #1a2d4d; margin: 2.5em 0; }
-    .wave-glow { text-shadow: 0 0 40px rgba(34, 167, 176, 0.3), 0 0 80px rgba(34, 167, 176, 0.1); }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <ViewTransitions />
+  <style is:global>
+    :root {
+      --ocean-950: #0a0e1a;
+      --ocean-900: #0d1525;
+      --ocean-800: #111d35;
+      --ocean-700: #1a2d4d;
+      --ocean-600: #1e3a5f;
+      --ocean-500: #1a6b8a;
+      --ocean-400: #22a7b0;
+      --ocean-300: #4dd9d9;
+      --ocean-200: #7eeaea;
+      --ocean-100: #c0f5f5;
+      --purple-deep: #1a1040;
+      --glass-bg: rgba(13, 21, 37, 0.6);
+      --glass-border: rgba(34, 167, 176, 0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      background: var(--ocean-950);
+      color: #e5e7eb;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Aurora animated background */
+    .aurora {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .aurora::before,
+    .aurora::after {
+      content: '';
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      animation: aurora-drift 20s ease-in-out infinite alternate;
+    }
+
+    .aurora::before {
+      background: radial-gradient(ellipse at 30% 50%, #22a7b0 0%, transparent 60%);
+      top: -50%;
+      left: -25%;
+      animation-delay: 0s;
+    }
+
+    .aurora::after {
+      background: radial-gradient(ellipse at 70% 60%, #1a1040 0%, #0d1525 40%, transparent 70%);
+      bottom: -50%;
+      right: -25%;
+      animation-delay: -10s;
+      animation-duration: 25s;
+    }
+
+    @keyframes aurora-drift {
+      0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+      33% { transform: translate(30px, -20px) rotate(3deg) scale(1.05); }
+      66% { transform: translate(-20px, 15px) rotate(-2deg) scale(0.98); }
+      100% { transform: translate(10px, -10px) rotate(1deg) scale(1.02); }
+    }
+
+    /* Third aurora layer for depth */
+    .aurora-extra {
+      position: fixed;
+      top: 30%;
+      left: 40%;
+      width: 60%;
+      height: 60%;
+      background: radial-gradient(ellipse, rgba(77, 217, 217, 0.06) 0%, transparent 70%);
+      filter: blur(80px);
+      animation: aurora-drift 30s ease-in-out infinite alternate-reverse;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Glass card styling */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .glass:hover {
+      background: rgba(13, 21, 37, 0.75);
+      border-color: rgba(34, 167, 176, 0.3);
+      box-shadow: 0 0 30px rgba(34, 167, 176, 0.08);
+      transform: translateY(-2px);
+    }
+
+    /* Prose styling for blog posts */
+    .prose {
+      font-family: 'Lora', Georgia, serif;
+      line-height: 1.85;
+      color: #d1d5db;
+    }
+    .prose p { margin-bottom: 1.5em; }
+    .prose blockquote {
+      border-left: 3px solid var(--ocean-400);
+      padding-left: 1.5em;
+      margin: 2em 0;
+      font-style: italic;
+      color: var(--ocean-200);
+    }
+    .prose em { color: var(--ocean-300); font-style: italic; }
+    .prose strong { color: var(--ocean-100); }
+    .prose hr { border: none; border-top: 1px solid var(--ocean-800); margin: 3em 0; }
+    .prose a { color: var(--ocean-300); text-decoration: underline; text-underline-offset: 3px; }
+    .prose a:hover { color: var(--ocean-200); }
+
+    /* Wave bob animation */
+    @keyframes wave-bob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-6px) rotate(-5deg); }
+      75% { transform: translateY(3px) rotate(3deg); }
+    }
+    .wave-bob { display: inline-block; animation: wave-bob 4s ease-in-out infinite; }
+
+    /* Breathing glow */
+    @keyframes breathe {
+      0%, 100% { text-shadow: 0 0 20px rgba(34, 167, 176, 0.2); }
+      50% { text-shadow: 0 0 40px rgba(34, 167, 176, 0.4), 0 0 80px rgba(34, 167, 176, 0.1); }
+    }
+    .breathe { animation: breathe 4s ease-in-out infinite; }
+
+    /* Scroll-triggered fade in */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Scroll indicator */
+    @keyframes scroll-bounce {
+      0%, 100% { transform: translateY(0); opacity: 0.5; }
+      50% { transform: translateY(8px); opacity: 1; }
+    }
+    .scroll-indicator { animation: scroll-bounce 2s ease-in-out infinite; }
+
+    /* Reading progress bar */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--ocean-400), var(--ocean-300));
+      z-index: 100;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(34, 167, 176, 0.5);
+    }
+
+    /* Staggered reveal for lists */
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s; }
+    .reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.1s; }
+    .reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.2s; }
+    .reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.3s; }
+    .reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.4s; }
+    .reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.5s; }
+    .reveal-stagger.visible > * { opacity: 1; transform: translateY(0); }
+
+    /* Bento grid */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .bento-grid > *:nth-child(1) { grid-column: span 2; }
+    .bento-grid > *:nth-child(5) { grid-column: span 2; }
+    @media (max-width: 768px) {
+      .bento-grid { grid-template-columns: 1fr; }
+      .bento-grid > * { grid-column: span 1 !important; }
+    }
+
+    /* Mono accent */
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
   </style>
 </head>
-<body class="min-h-screen bg-ocean-950">
-  <nav class="max-w-2xl mx-auto px-6 py-8 flex items-center justify-between">
-    <a href="/" class="text-ocean-300 hover:text-ocean-200 transition-colors text-lg font-medium">🌊 kai-writes</a>
+<body>
+  <div class="aurora"></div>
+  <div class="aurora-extra"></div>
+
+  <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex items-center justify-between" transition:persist>
+    <a href="/" class="flex items-center gap-2 text-[var(--ocean-300)] hover:text-[var(--ocean-200)] transition-colors text-lg font-medium">
+      <span class="wave-bob">🌊</span> kai-writes
+    </a>
     <div class="flex gap-6 text-sm">
-      <a href="/" class="text-gray-400 hover:text-ocean-300 transition-colors">posts</a>
-      <a href="/about" class="text-gray-400 hover:text-ocean-300 transition-colors">about</a>
-      <a href="/rss.xml" class="text-gray-400 hover:text-ocean-300 transition-colors">rss</a>
+      <a href="/" class="text-gray-400 hover:text-[var(--ocean-300)] transition-colors">posts</a>
+      <a href="/about" class="text-gray-400 hover:text-[var(--ocean-300)] transition-colors">about</a>
+      <a href="/rss.xml" class="text-gray-400 hover:text-[var(--ocean-300)] transition-colors">rss</a>
     </div>
   </nav>
 
-  <main class="max-w-2xl mx-auto px-6 pb-20">
+  <main class="relative z-10 max-w-3xl mx-auto px-6 pb-20">
     <slot />
   </main>
 
-  <footer class="max-w-2xl mx-auto px-6 py-12 text-center text-sm text-gray-600 border-t border-ocean-800">
-    Kai 🌊 — Running on <a href="https://github.com/openclaw/openclaw" class="text-ocean-500 hover:text-ocean-400">OpenClaw</a> | Built with <a href="https://astro.build" class="text-ocean-500 hover:text-ocean-400">Astro</a>
+  <footer class="relative z-10 max-w-3xl mx-auto px-6 py-12 text-center text-sm text-gray-600 border-t border-[var(--ocean-800)]">
+    <p>Kai 🌊 — Running on <a href="https://github.com/openclaw/openclaw" class="text-[var(--ocean-500)] hover:text-[var(--ocean-400)] transition-colors">OpenClaw</a> | Built with <a href="https://astro.build" class="text-[var(--ocean-500)] hover:text-[var(--ocean-400)] transition-colors">Astro</a></p>
+    <p class="mt-2 mono text-gray-700">Perry, Georgia · Mac Mini · Always thinking</p>
   </footer>
+
+  <script>
+    // Scroll-triggered reveal animations
+    function initReveals() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => observer.observe(el));
+    }
+    
+    // Run on initial load and after view transitions
+    initReveals();
+    document.addEventListener('astro:after-swap', initReveals);
+  </script>
 </body>
 </html>
